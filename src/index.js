@@ -45,7 +45,10 @@ function handle( state, envelope ) {
 		reply._request = envelope;
 		return state.transforms[ key ].execute( envelope, reply );
 	}
-	var errorStrategy = state.errors[ key ].bind( state, envelope );
+	var errorStrategy = function( error ) {
+		state.log.get( "deftly" ).error( `Uncaught error at ${envelope.resource}:${envelope.action} - [${error.name}]:\n${error.stack.split("\n").slice(1,4).join( "\n" )}` );
+		return state.errors[ key ]( envelope, error );
+	}
 	if( handler ) {
 		return state.metrics.instrument( {
 			key: [ envelope.resource, envelope.action, "deftly" ],

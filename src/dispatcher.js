@@ -56,7 +56,7 @@ function createStacks( state ) {
 			transform.append( unit );
 			state.transforms[ transform.name ] = transform;
 			var errors = Object.assign( {}, serviceErrors, resourceErrors, actionErrors );
-			state.errors[ key ] = handleError.bind( null, errors );
+			state.errors[ key ] = handleError.bind( null, state, errors );
 		} );
 	} );
 }
@@ -92,8 +92,11 @@ function findMiddleware( state, spec ) {
 	return { name: newName, call: stack.calls[ stepName ] };
 }
 
-function handleError( strategies, envelope, error ) {
-	var strategy = strategies[ error.name ] || strategies.Error || defaultErrorStrategy;
+function handleError( state, strategies, envelope, error ) {
+	var strategy = strategies[ error.name ] || 
+					strategies[ error.name.replace( "Error", "" ) ] ||
+					strategies.Error || 
+					defaultErrorStrategy;
 	if( _.isFunction( strategy ) ) {
 		return strategy( envelope, error );
 	} else if( strategy.handle ) {
