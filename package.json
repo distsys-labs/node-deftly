@@ -1,6 +1,6 @@
 {
   "name": "deftly",
-  "version": "1.0.0-6",
+  "version": "1.0.0-7",
   "description": "A transport agnostic microservice library",
   "main": "src/index.js",
   "scripts": {

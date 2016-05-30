@@ -2,6 +2,7 @@ var _ = require( "lodash" );
 var when = require( "when" );
 var defaults = require( "./defaults" );
 var dispatcherFn = require( "./dispatcher" );
+var order = require( "./order" );
 
 function forEachAction( state, filter, iterator ) {
 	if( !iterator ) {
@@ -103,7 +104,8 @@ function initialize( supplied ) {
 			middleware: undefined,
 			transform: undefined,
 		},
-		config: config
+		config: config,
+		stackOrder: order( config )
 	};
 
 	state.start = start.bind( null, state );
