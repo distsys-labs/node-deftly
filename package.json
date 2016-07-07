@@ -1,6 +1,6 @@
 {
   "name": "deftly",
-  "version": "1.0.0-7",
+  "version": "1.0.0",
   "description": "A transport agnostic microservice library",
   "main": "src/index.js",
   "scripts": {
@@ -35,8 +35,8 @@
     "fount": "~0.2.0-3",
     "lodash": "^4.11.1",
     "metronic": "^0.2.5",
-    "modlo": "~1.1.1",
-    "snapstack": "~1.0.5",
+    "modlo": "~1.1.2",
+    "snapstack": "~1.0.6",
     "when": "^3.7.7"
   }
 }
