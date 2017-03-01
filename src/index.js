@@ -1,5 +1,4 @@
 var _ = require( "lodash" );
-var when = require( "when" );
 var defaults = require( "./defaults" );
 var dispatcherFn = require( "./dispatcher" );
 var order = require( "./order" );
@@ -70,7 +69,7 @@ function handle( state, envelope ) {
 		// chances are, if you hit this, you have a transport behaving
 		// _very_ badly.
 		state.log( "A transport has created" );
-		return when( {
+		return Promise.resolve( {
 			status: 404,
 			data: format( "No handler found for %s - %s", envelope.resource, envelope.action )
 		} );
@@ -124,7 +123,7 @@ function initialize( supplied ) {
 		loadTransports( state )
 	];
 
-	return when.all( promises )
+	return Promise.all( promises )
 		.then( initializePlugins.bind( null, state ) )
 		.then( initializeTransports.bind( null, state ) )
 		.then( initializeDispatcher.bind( null, state ) );
@@ -141,13 +140,13 @@ function initializeExtension( state, extension ) {
 }
 
 function initializePlugins( state ) {
-	return when.all( _.map( 
+	return Promise.all( _.map( 
 		state.plugins, initializeExtension.bind( null, state ) 
 	) );
 }
 
 function initializeTransports( state ) {
-	return when.all( _.map( 
+	return Promise.all( _.map( 
 		state.transports, initializeExtension.bind( null, state ) 
 	) );
 }
@@ -160,7 +159,7 @@ function loadMiddleware( state ) {
 				return result;
 			} );
 	} else {
-		return when( {} );
+		return Promise.resolve( {} );
 	}
 }
 
@@ -177,7 +176,7 @@ function loadExtensions( state, type ) {
 	} );
 	var container = state.fount( type );
 	if( files.length === 0 && names.length === 0 ) {
-		return when( {} );
+		return Promise.resolve( {} );
 	}
 	return state.modlo
 		.load( { 
@@ -198,7 +197,7 @@ function loadExtensions( state, type ) {
 						};
 					} );
 			} );
-			return when.all( promises )
+			return Promise.all( promises )
 				.then( function( extensions ) {
 					return _.reduce( extensions, function( acc, extension ) { 
 						acc[ extension.key ] = extension.value;
@@ -233,7 +232,7 @@ function start( state, transportName ) {
 		var transport = state.transports[ transportName ]
 		return startTransport( transport );
 	} else {
-		return when.all( _.map( state.transports, startTransport ) )	
+		return Promise.all( _.map( state.transports, startTransport ) )	
 	}
 	
 }
@@ -247,7 +246,7 @@ function stop( state, transportName ) {
 		var transport = state.transports[ transportName ]
 		return stopTransport( transport );
 	} else {
-		return when.all( _.map( state.transports, stopTransport ) )	
+		return Promise.all( _.map( state.transports, stopTransport ) )	
 	}
 }
 

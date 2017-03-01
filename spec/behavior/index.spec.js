@@ -1,7 +1,6 @@
 require( "../setup" );
 var deftly = require( "../../src/index" );
 
-
 describe( "Index", function() {
 	describe( "when changing middleware stacks", function() {
 		var service;
