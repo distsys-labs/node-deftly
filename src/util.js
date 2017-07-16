@@ -1,35 +1,18 @@
-var _ = require( "lodash" );
-var functionRegex = /(function\W*)?(\S+\W*)?[(]([^)]*)[)]\W*[{=>]\W*([\s\S]+)?[};]{0,}/m;
+const _ = require('fauxdash')
+const reserved = [ 'next', 'cb', 'callback', 'continue', 'done' ]
 
-var reserved = [ "next", "cb", "callback", "continue", "done" ];
-
-function parseFunction( fn ) {
-	var source = fn.toString();
-	var parts = functionRegex.exec( source );
-	return {
-		name: parts[ 2 ],
-		arguments: _.filter( parts[ 3 ]
-			.replace( /\s/g, "" )
-			.split( "," ) ),
-		body: parts[ 4 ]
-	}
-}
-
-function getArgumentsFor() {
-	var list = Array.prototype.slice.call( arguments, 0 );
-	var functions = _.map( list, parseFunction );
-	return _.reduce( functions, function( acc, fn ) {
-		var functionArgs = fn.arguments.slice( 1 );
-		var argList = [ functionArgs ].concat( reserved.concat( acc.arguments ) );
-		var args = _.without.apply( null, argList );
-		var callbacks = _.intersection( functionArgs, reserved );
-		acc.arguments = acc.arguments.concat( args );
-		acc.callbacks = _.uniq( acc.callbacks.concat( callbacks ) );
-		return acc;
-	}, { arguments: ["envelope" ], callbacks: [] } );
+function getArgumentsFor (...parameters) {
+  const functions = _.map(parameters, _.parseFunction)
+  return functions.reduce((acc, fn) => {
+    const functionArgs = fn.arguments.slice(1)
+    const args = _.without(functionArgs, reserved.concat(acc.arguments))
+    const callbacks = _.intersection(functionArgs, reserved)
+    acc.arguments = acc.arguments.concat(args)
+    acc.callbacks = _.uniq(acc.callbacks.concat(callbacks))
+    return acc
+  }, { arguments: [ 'envelope' ], callbacks: [] })
 }
 
 module.exports = {
-	parseFunction: parseFunction,
-	getArgumentsFor: getArgumentsFor
+  getArgumentsFor: getArgumentsFor
 }

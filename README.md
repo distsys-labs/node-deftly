@@ -1,6 +1,9 @@
 ## deftly
 A transport agnostic, resource oriented, middleware powered approach to microservices.
 
+[![Build Status][travis-image]][travis-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
+
 ## Concepts
 `deftly` provides building blocks and common interfaces that establish a convention for how to stitch components together to build your service. While there are some opinions inherent in the way its put together, it is very easy to extend and alter.
 
@@ -19,19 +22,19 @@ It does this by loading resources and extensions that it will then use to build 
 The high-level pipeline looks like this:
 
 ```
-incoming "message" -> transport
+incoming 'message' -> transport
 	transport creates envelope
-		`deftly.handle( envelope )`
+		`deftly.handle (envelope)`
 			resource[ action ]
 				-> middleware
 				<- transforms
-	transport "responds"
+	transport 'responds'
 ```
 
 ## Initialization Pipeline
 The initialization pipeline is relatively straight-forward but understanding the order things happen in is important
 ```
-deftly.configure( configuration )
+deftly.configure (configuration)
 	load middleware
 	load plugins
 	load resources
@@ -54,16 +57,16 @@ Resources are the way the outside world interacts with your service. The provide
 
 ```js
 {
-	name: "",
-	middleware: []|""|{}, // pre-handle middleware
-	transforms: []|""|{}, // post-handle middleware
+	name: '',
+	middleware: []|''|{}, // pre-handle middleware
+	transforms: []|''|{}, // post-handle middleware
 	errors: {}, // custom error handlers
 	actions: {
 		[actionName]: {
-			middleware: []|""|{}, // action-specific middleware
-			transforms: []|""|{}, // post-handle middleware
+			middleware: []|''|{}, // action-specific middleware
+			transforms: []|''|{}, // post-handle middleware
 			errors: {}, // custom error handlers
-			handle: function( envelope ) {
+			handle: function (envelope) {
 			} || []
 		}
 	}
@@ -80,11 +83,11 @@ While several of the properties can only be provided by the transport when the e
 
 ```js
 {
-	transport: "", // required
-	route: "",
-	version: "",
-	resource: "", // required
-	action: "", // required
+	transport: '', // required
+	route: '',
+	version: '',
+	resource: '', // required
+	action: '', // required
 	headers: {},
 	body: {}, // required
 	user: {}
@@ -97,16 +100,16 @@ The handle property can contain one or more functions. When providing multiple f
 Each handle call is expected to resolve the middleware stack by returning a response. This can be done directly, via a promise or using the callback passed to the function.
 
 ```js
-handle: function direct( envelope, next ) {
-	return { data: "that was easy" };
+handle: function direct (envelope, next) {
+	return { data: 'that was easy' }
 }
 
-handle: function promised( envelope, next ) {
-	return when( { data: "this is also easy" } );
+handle: function promised (envelope, next) {
+	return Promise.resolve({ data: 'this is also easy' })
 }
 
-handle: function callback( envelope, next ) {
-	next( { data: "so simple" } );
+handle: function callback (envelope, next) {
+	next({ data: 'so simple' })
 }
 ```
 
@@ -118,7 +121,7 @@ While you are free to do just about anything, the recommended base properties ar
 ```js
 // defaults shown
 {
-	_request: { ... }, // the reqeuest envelope
+	_request: {}, // the reqeuest envelope
 	data: undefined,
 	headers: {}, // set headers sent back in the response
 }
@@ -133,8 +136,8 @@ Once a response has been produced by a handle, before the result is handed off t
 Modules loaded can take dependencies on external modules that will be provided via fount. They do this by putting arguments on the function returned from the module that defines them:
 
 ```js
-module.exports = function( envelope, dependency1, dependency2 ) {
-	return { ... };
+module.exports = function (envelope, dependency1, dependency2) {
+	return {}
 }
 ```
 
@@ -153,21 +156,21 @@ While this can be set directly via configuration, there are also helper function
 __defaults shown__
 ```js
 {
-	title: "", // process/service title
-	resources: [ "./src/resources/*.js" ],
-	middleware: [ "./src/middleware/*.js" ],
-	plugins: [ "./src/plugins/*.js" ],
-	transports: [ "./src/transports/*.js" ],
-	middlewareStack: [ 
-		"service.middleware",
-		"resource.middleware",
-		"action.middleware",
-		"action.handle"
+	title: ', // process/service title
+	resources: [ './src/resources/*.js' ],
+	middleware: [ './src/middleware/*.js' ],
+	plugins: [ './src/plugins/*.js' ],
+	transports: [ './src/transports/*.js' ],
+	middlewareStack: [
+		'service.middleware',
+		'resource.middleware',
+		'action.middleware',
+		'action.handle'
 	],
 	transformStack: [
-		"service.transform",
-		"resource.transform",
-		"action.transform"
+		'service.transform',
+		'resource.transform',
+		'action.transform'
 	],
 	fount: undefined, // uses an internal instance
 	metronic: undefined, // uses an internal instance
@@ -183,31 +186,31 @@ __defaults shown__
 
 ## API
 
-### `handle( envelope )`
+### `handle (envelope)`
 Returns a promise based on the corresponding resource/action middelware stack. The result is a hash object (defined earlier) that the trasport is responsible for handling.
 
 > IMPORTANT: the resource and action properties must be set on the envelope in order for deftly to know which stack to execute.
 
-### `init( configuration )`
+### `init (configuration)`
 The init call creates a service instance based on the configuration provided and returns a promise that will resolve to the service handle.
 
-### `start( [transport] )`
+### `start ([transport])`
 Starts all the transports for the service. If a transport name is supplied, only that transport is started.
 
-### `stop( [transport] )`
+### `stop ([transport])`
 Stops all the transports for the service. If a transport name is supplied, only that transport is stopped.
 
 ### Resource Processing
 While the entire resource hash is available in the `resources` property, extensions will likely need the ability to process or alter resource and action definitions based on metadata added to them in the service. `deftly` provides a set of calls that will use filtering and iteration to make this task a little simpler.
 
-#### `forEachResource( [filter], processor )`
+#### `forEachResource ([filter], processor)`
 The filter is optional but means your processor will be called for every resource that was loaded. Processor is a function that is passed a resource so that the extensions has the opportunity to process or alter the resource definition _before_ the middleware stacks are created.
 
-#### `forEachAction( [filter], processor )`
+#### `forEachAction([filter], processor)`
 The filter is optional but means your processor will be called for every resource that was loaded. Processor is a function that is passed an action and its resource so that the extension has the opportunity to process or alter the action definition _before_ the middleware stacks are created.
 
 ```js
-function processor( action, resource ) {
+function processor (action, resource) {
 	// do stuff here
 }
 ```
@@ -217,23 +220,23 @@ This allows plugins to introduce new middleware or transform segments to the mid
 
 __examples
 ```js
-	"service.authenticate"
-	"resource.authorize"
-	"action.authorize"
-	"action.validate"
+	'service.authenticate'
+	'resource.authorize'
+	'action.authorize'
+	'action.validate'
 ```
 
 Because deftly has two different stacks in the call pipeline, it separates everything that happens before the `handle` call (`middleware`) from everything that happens after it (`transform`). In order to introduce a new step, the target stack is required
 
-> Important: "action.handle" is, by default, the last call in the middleware stack.
+> Important: 'action.handle' is, by default, the last call in the middleware stack.
 
-#### `stackOrder.append( "middleware"|"transport", spec )`
+#### `stackOrder.append ('middleware'|'transport', spec)`
 
-#### `stackOrder.prepend( "middleware"|"transport", spec )`
+#### `stackOrder.prepend ('middleware'|'transport', spec)`
 
-#### `stackOrder.insertAfter( "middleware"|"transport", spec, existingStep )`
+#### `stackOrder.insertAfter ('middleware'|'transport', spec, existingStep)`
 
-#### `stackOrder.insertBefore( "middleware"|"transport", spec, existingStep )`
+#### `stackOrder.insertBefore ('middleware'|'transport', spec, existingStep)`
 
 ### `.log`
 The handle to deftly's logging abstraction. Resources, transports and plugins all have access to this and should utilize this vs. a particular logging library directly. See [logging](/docs/logging.md) document for more details.
@@ -256,11 +259,16 @@ A hash of the loaded plugins.
 ## Use
 
 ```js
-var deftly = require( "deftly" ); 
-var config = require( "./configuration" );
+const deftly = require('deftly')
+const config = require('./configuration')
 
-deftly.init( config )
-	.then( function( service ) {
-		service.start();
-	} );
+deftly.init(config)
+	.then(service => {
+		service.start()
+	})
 ```
+
+[travis-url]: https://travis-ci.org/deftly/snapstack
+[travis-image]: https://travis-ci.org/deftly/snapstack.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/deftly/snapstack?branch=master
+[coveralls-image]: https://coveralls.io/repos/github/deftly/snapstack/badge.svg?branch=master
