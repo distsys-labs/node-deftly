@@ -268,7 +268,7 @@ deftly.init(config)
 	})
 ```
 
-[travis-url]: https://travis-ci.org/deftly/snapstack
-[travis-image]: https://travis-ci.org/deftly/snapstack.svg?branch=master
-[coveralls-url]: https://coveralls.io/github/deftly/snapstack?branch=master
-[coveralls-image]: https://coveralls.io/repos/github/deftly/snapstack/badge.svg?branch=master
+[travis-url]: https://travis-ci.org/deftly/node-deftly
+[travis-image]: https://travis-ci.org/deftly/node-deftly.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/deftly/node-deftly?branch=master
+[coveralls-image]: https://coveralls.io/repos/github/deftly/node-deftly/badge.svg?branch=master
