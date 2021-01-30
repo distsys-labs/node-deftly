@@ -1,11 +1,11 @@
 const _ = require('fauxdash')
 const format = require('util').format
 const levels = {
-  'debug': 5,
-  'info': 4,
-  'warn': 3,
-  'error': 2,
-  'fatal': 1
+  debug: 5,
+  info: 4,
+  warn: 3,
+  error: 2,
+  fatal: 1
 }
 
 const defaultConfig = {
@@ -51,10 +51,10 @@ function addAdapter (state, name, config, logger) {
 // add the regex filter to the right hash for use later
 function addFilter (config, filter) {
   if (filter) {
-    if (filter[ 0 ] === '-') {
-      config.filters.ignore[ filter ] = new RegExp('^' + filter.slice(1).replace(/[*]/g, '.*?') + '$')
+    if (filter[0] === '-') {
+      config.filters.ignore[filter] = new RegExp('^' + filter.slice(1).replace(/[*]/g, '.*?') + '$')
     } else {
-      config.filters.should[ filter ] = new RegExp('^' + filter.replace(/[*]/g, '.*?') + '$')
+      config.filters.should[filter] = new RegExp('^' + filter.replace(/[*]/g, '.*?') + '$')
     }
   }
 }
@@ -76,13 +76,13 @@ function addLogger (state, name, config, adapter) {
     logger.init = memoize(adapter)
   }
   logger.log = onEntry.bind(null, logger)
-  state.loggers[ name ] = logger
+  state.loggers[name] = logger
 }
 
 // create a bound prepMessage call for each log level
 function attach (state, logger, namespace) {
   _.each(levels, function (level, name) {
-    logger[ name ] = prepMessage.bind(null, state, name, namespace)
+    logger[name] = prepMessage.bind(null, state, name, namespace)
   })
 }
 
@@ -96,7 +96,7 @@ function init (state, namespace) {
 
 // calls log for each logger
 function log (state, type, namespace, message) {
-  const level = levels[ type ]
+  const level = levels[type]
   _.each(state.loggers, function (logger) {
     logger.log({
       type: type,
@@ -123,8 +123,8 @@ function memoize (fn) {
 function onEntry (logger, entry) {
   if (shouldRender(logger.config, entry)) {
     const log = logger.init ? logger.init(entry.namespace) : logger.adapter
-    if (log[ entry.type ]) {
-      log[ entry.type ](entry)
+    if (log[entry.type]) {
+      log[entry.type](entry)
     } else {
       log(entry)
     }
@@ -144,10 +144,10 @@ function prepMessage (state, level, namespace, message) {
 // remove the regex filter from the correct hash
 function removeFilter (config, filter) {
   if (filter) {
-    if (config.filters.ignore[ filter ]) {
-      delete config.filters.ignore[ filter ]
+    if (config.filters.ignore[filter]) {
+      delete config.filters.ignore[filter]
     } else {
-      delete config.filters.should[ filter ]
+      delete config.filters.should[filter]
     }
   }
 }

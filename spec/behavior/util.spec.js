@@ -1,5 +1,5 @@
 require('../setup')
-var util = require('../../src/util')
+const util = require('../../src/util')
 
 describe('Utility', function () {
   describe('when getting argument list from functions', function () {

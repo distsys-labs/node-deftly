@@ -1,11 +1,11 @@
 require('../setup.js')
+const _ = require('fauxdash')
 const deftly = require('../../src/index')
-const when = require('when')
 const postal = require('postal.request-response')(require('postal'))
 const fount = require('fount')
 
 postal.configuration.promise.createDeferred = function () {
-  return when.defer()
+  return _.future()
 }
 
 postal.configuration.promise.getPromise = function (dfd) {
@@ -13,23 +13,23 @@ postal.configuration.promise.getPromise = function (dfd) {
 }
 
 describe('Integration Test', function () {
-  var telemetry
+  let telemetry
   before(function () {
     fount.registerAsValue('postal', postal)
     fount('transports').registerAsValue('postal', postal)
     telemetry = postal.channel('telemetry')
     return deftly.init({
       fount: fount,
-      resources: [ './spec/extensions/resources/*.js' ],
-      middleware: [ './spec/extensions/middleware/*.js' ],
-      plugins: [ './spec/extensions/plugins/*.js' ],
-      transports: [ './spec/extensions/transports/*.js' ]
+      resources: ['./spec/extensions/resources/*.js'],
+      middleware: ['./spec/extensions/middleware/*.js'],
+      plugins: ['./spec/extensions/plugins/*.js'],
+      transports: ['./spec/extensions/transports/*.js']
     })
-    .then(function (service) {
-      service.metrics.recordUtilization()
-      service.metrics.useLocalAdapter()
-      return service.start()
-    })
+      .then(function (service) {
+        service.metrics.recordUtilization()
+        service.metrics.useLocalAdapter()
+        return service.start()
+      })
   })
 
   describe('when not authenticated', function () {

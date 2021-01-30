@@ -1,12 +1,12 @@
 const fount = require('fount')
-const metronic = require('metronic')
+const metronic = require('@viperidae/metronic')
 
 module.exports = {
   title: '', // process/service title
-  resources: [ './src/resources/*.js' ],
-  middleware: [ './src/middleware/*.js' ],
-  plugins: [ './src/plugins/*.js' ],
-  transports: [ './src/transports/*.js' ],
+  resources: ['./src/resources/*.js'],
+  middleware: ['./src/middleware/*.js'],
+  plugins: ['./src/plugins/*.js'],
+  transports: ['./src/transports/*.js'],
   fount: fount, // uses an internal instance
   metronic: metronic, // uses an internal instance
   middlewareStack: [

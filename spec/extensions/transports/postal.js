@@ -5,7 +5,7 @@ function getEnvelope (action, resource, data, envelope) {
     resource: resource.name,
     data: data || {},
     headers: envelope.headers || {},
-    route: [ envelope.channel, envelope.topic ].join(':'),
+    route: [envelope.channel, envelope.topic].join(':'),
     user: envelope.user || { id: 'anonymous' },
     role: envelope.role || 'anonymous'
   }
@@ -36,11 +36,11 @@ function createRoutes (state, deftly) {
 
 function initialize (state, deftly) {
   deftly.log.get('http')
-  var configuration = deftly.config.http || {}
+  const configuration = deftly.config.http || {}
   Object.assign(state, {
     config: configuration
   })
-  var reply = Promise.resolve()
+  let reply = Promise.resolve()
   if (configuration.configure) {
     reply = configuration.configure(state)
     if (!reply.then) {
@@ -59,7 +59,7 @@ function stop (state) {
 }
 
 module.exports = function postalTransport (postal) {
-  var state = {
+  const state = {
     postal: postal
   }
   return {

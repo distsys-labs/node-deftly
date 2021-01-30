@@ -1,11 +1,9 @@
-var _ = require('lodash')
-
 function append (config, step) {
   config.middlewareStack.push(step)
 }
 
 function insertAfter (config, target, step) {
-  var index = _.indexOf(config.middlewareStack, target)
+  const index = config.middlewareStack.indexOf(target)
   if (index >= 0) {
     config.middlewareStack.splice(index + 1, 0, step)
   } else {
@@ -14,7 +12,7 @@ function insertAfter (config, target, step) {
 }
 
 function insertBefore (config, target, step) {
-  var index = _.indexOf(config.middlewareStack, target)
+  const index = config.middlewareStack.indexOf(target)
   if (index >= 0) {
     config.middlewareStack.splice(index, 0, step)
   } else {

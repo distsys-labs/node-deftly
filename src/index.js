@@ -38,20 +38,20 @@ function forEachResource (state, filter, iterator) {
 }
 
 function handle (state, envelope) {
-  const key = [ envelope.resource, envelope.action ].join('!')
-  const handler = state.handlers[ key ]
+  const key = [envelope.resource, envelope.action].join('!')
+  const handler = state.handlers[key]
   const user = envelope.user || { id: 'anonymous' }
   const transform = function replyTransform (reply) {
     reply._request = envelope
-    return state.transforms[ key ].execute(envelope, reply)
+    return state.transforms[key].execute(envelope, reply)
   }
   const errorStrategy = function (error) {
     state.log.get('deftly').error(`Uncaught error at ${envelope.resource}:${envelope.action} - [${error.name}]:\n${error.stack.split('\n').slice(1, 4).join('\n')}`)
-    return state.errors[ key ](envelope, error)
+    return state.errors[key](envelope, error)
   }
   if (handler) {
     return state.metrics.instrument({
-      key: [ envelope.resource, envelope.action, 'deftly' ],
+      key: [envelope.resource, envelope.action, 'deftly'],
       call: function () {
         return handler.execute(state, envelope)
           .then(transform, errorStrategy)
@@ -163,7 +163,7 @@ function loadMiddleware (state) {
 }
 
 function loadExtensions (state, type) {
-  const list = state.config[ type ]
+  const list = state.config[type]
   const files = []
   const names = []
   _.each(list, function (x) {
@@ -189,7 +189,7 @@ function loadExtensions (state, type) {
           .resolve(extension)
           .then(function (result) {
             result.name = result.name || extension
-            state[ type ][ extension ] = result
+            state[type][extension] = result
             return {
               key: extension,
               value: result
@@ -199,7 +199,7 @@ function loadExtensions (state, type) {
       return Promise.all(promises)
         .then(function (extensions) {
           return _.reduce(extensions, function (acc, extension) {
-            acc[ extension.key ] = extension.value
+            acc[extension.key] = extension.value
             return acc
           }, {})
         })
@@ -228,7 +228,7 @@ function normalizeConfig (supplied) {
 
 function start (state, transportName) {
   if (transportName) {
-    var transport = state.transports[ transportName ]
+    const transport = state.transports[transportName]
     return startTransport(transport)
   } else {
     return Promise.all(_.map(state.transports, startTransport))
@@ -241,7 +241,7 @@ function startTransport (transport) {
 
 function stop (state, transportName) {
   if (transportName) {
-    const transport = state.transports[ transportName ]
+    const transport = state.transports[transportName]
     return stopTransport(transport)
   } else {
     return Promise.all(_.map(state.transports, stopTransport))
@@ -253,7 +253,7 @@ function stopTransport (transport) {
 }
 
 function toArray (value) {
-  return _.isString(value) ? [ value ] : (value || [])
+  return _.isString(value) ? [value] : (value || [])
 }
 
 function unit (x) { return x }

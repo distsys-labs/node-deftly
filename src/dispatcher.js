@@ -17,11 +17,11 @@ function addMiddleware (state, stack, spec, name) {
     }
   } else if (Array.isArray(spec)) {
     if (spec.length) {
-      if (spec[ 0 ].when && spec[ 0 ].then) {
+      if (spec[0].when && spec[0].then) {
         stack.append(spec, name)
       } else {
         _.each(spec, function (item, index) {
-          addMiddleware(state, stack, item, [ name, index ].join('-'))
+          addMiddleware(state, stack, item, [name, index].join('-'))
         })
       }
     }
@@ -39,12 +39,12 @@ function createStacks (state) {
     _.each(resource.actions, function (action, actionName) {
       action.name = actionName
       const actionErrors = action.errors
-      var transform
-      const key = [ resource.name, action.name ].join('!')
+      let transform
+      const key = [resource.name, action.name].join('!')
 
       if (state.config.middlewareStack) {
         const middleware = getStack(state, state.config.middlewareStack, resource, action)
-        state.handlers[ middleware.name ] = middleware
+        state.handlers[middleware.name] = middleware
       }
       if (state.config.transformStack) {
         transform = getStack(state, state.config.transformStack, resource, action)
@@ -52,9 +52,9 @@ function createStacks (state) {
         transform = state.snap.stack(key)
       }
       transform.append(unit)
-      state.transforms[ transform.name ] = transform
+      state.transforms[transform.name] = transform
       const errors = Object.assign({}, serviceErrors, resourceErrors, actionErrors)
-      state.errors[ key ] = handleError.bind(null, state, errors)
+      state.errors[key] = handleError.bind(null, state, errors)
     })
   })
 }
@@ -72,26 +72,26 @@ function defaultErrorStrategy (env, error) {
 // from loaded middleware
 function findMiddleware (state, spec) {
   const parts = spec.split('.')
-  const stackName = parts[ 0 ]
-  const stepName = parts[ 1 ]
-  const stack = state.stacks[ stackName ]
+  const stackName = parts[0]
+  const stepName = parts[1]
+  const stack = state.stacks[stackName]
   if (!stack) {
     throw new Error(`A stack named '${stackName}' was specified but not found`)
   } else if (!stepName) {
     return stack
   }
-  if (!stack.calls[ stepName ]) {
+  if (!stack.calls[stepName]) {
     throw new Error(`A step named '${stepName}' for stack '${stackName}' was specified but not found`)
   }
   // a new name is warranted so that we don't end up over-writing a previous step name
   // or have a future name over-write this
-  const newName = [ stackName, stepName ].join(':')
-  return { name: newName, call: stack.calls[ stepName ] }
+  const newName = [stackName, stepName].join(':')
+  return { name: newName, call: stack.calls[stepName] }
 }
 
 function handleError (state, strategies, envelope, error) {
-  const strategy = strategies[ error.name ] ||
-          strategies[ error.name.replace('Error', '') ] ||
+  const strategy = strategies[error.name] ||
+          strategies[error.name.replace('Error', '')] ||
           strategies.Error ||
           defaultErrorStrategy
   if (_.isFunction(strategy)) {
@@ -109,8 +109,8 @@ function handleError (state, strategies, envelope, error) {
 // find the property value
 function getProperty (service, resource, action, propertySpec) {
   const parts = propertySpec.split('.')
-  var target
-  switch (parts[ 0 ]) {
+  let target
+  switch (parts[0]) {
     case 'action':
       target = action
       break
@@ -120,14 +120,14 @@ function getProperty (service, resource, action, propertySpec) {
     default:
       target = service
   }
-  const property = parts[ 1 ]
-  return { key: property, value: target ? target[ property ] : null }
+  const property = parts[1]
+  return { key: property, value: target ? target[property] : null }
 }
 
 // iterates over the parts of the service, resource and actions
 // as configured in order to create a stack (middleware or transform)
 function getStack (state, list, resource, action) {
-  const handleName = [ resource.name, action.name ].join('!')
+  const handleName = [resource.name, action.name].join('!')
   const stack = state.snap.stack(handleName)
   _.each(list, function (propertySpec) {
     const property = getProperty(state.config.service || {}, resource, action, propertySpec)

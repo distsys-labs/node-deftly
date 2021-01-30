@@ -1,5 +1,5 @@
 const _ = require('fauxdash')
-const reserved = [ 'next', 'cb', 'callback', 'continue', 'done' ]
+const reserved = ['next', 'cb', 'callback', 'continue', 'done']
 
 function getArgumentsFor (...parameters) {
   const functions = _.map(parameters, _.parseFunction)
@@ -10,7 +10,7 @@ function getArgumentsFor (...parameters) {
     acc.arguments = acc.arguments.concat(args)
     acc.callbacks = _.uniq(acc.callbacks.concat(callbacks))
     return acc
-  }, { arguments: [ 'envelope' ], callbacks: [] })
+  }, { arguments: ['envelope'], callbacks: [] })
 }
 
 module.exports = {

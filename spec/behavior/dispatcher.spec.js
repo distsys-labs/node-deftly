@@ -19,13 +19,13 @@ CustomError.prototype = Object.create(Error.prototype)
 CustomError.prototype.constructor = CustomError
 
 describe('Dispatcher', function () {
-  var stackA
-  var dispatcher
-  var state
+  let stackA
+  let dispatcher
+  let state
   before(function () {
     stackA = snap.stack([
       function one (env, next) {
-        env.total ++
+        env.total++
         next()
       },
       function two (env, next) {
@@ -42,7 +42,7 @@ describe('Dispatcher', function () {
       config: require('../../src/defaults')
     }
 
-    state.stacks[ 'A' ] = stackA
+    state.stacks.A = stackA
     dispatcher = dispatchFn(state)
   })
 
@@ -52,7 +52,7 @@ describe('Dispatcher', function () {
   })
 
   describe('when adding entire stack to middelware', function () {
-    var newStack
+    let newStack
     before(function () {
       newStack = snap.stack([
         function prefix (env, next) {
@@ -71,7 +71,7 @@ describe('Dispatcher', function () {
   })
 
   describe("when adding middleware from stack's step", function () {
-    var newStack
+    let newStack
     before(function () {
       newStack = snap.stack([
         function prefix (env, next) {
@@ -90,7 +90,7 @@ describe('Dispatcher', function () {
   })
 
   describe('when adding a condition to stack', function () {
-    var newStack
+    let newStack
     before(function () {
       newStack = snap.stack([
         function prefix (env, next) {
@@ -127,7 +127,7 @@ describe('Dispatcher', function () {
   })
 
   describe('when adding a function to stack', function () {
-    var newStack
+    let newStack
     before(function () {
       newStack = snap.stack([
         function prefix (env, next) {
@@ -148,7 +148,7 @@ describe('Dispatcher', function () {
   })
 
   describe('when adding functions to stack', function () {
-    var newStack
+    let newStack
     before(function () {
       newStack = snap.stack([
         function prefix (env, next) {
@@ -175,7 +175,7 @@ describe('Dispatcher', function () {
   })
 
   describe('when adding non-uniform items to stack', function () {
-    var newStack
+    let newStack
     before(function () {
       newStack = snap.stack([
         function prefix (env, next) {
@@ -219,24 +219,24 @@ describe('Dispatcher', function () {
   })
 
   describe('when getting a property from specification', function () {
-    var resource, action
+    let resource, action
     before(function () {
       resource = {
-        middleware: [ 1 ]
+        middleware: [1]
       }
       action = {
-        middleware: [ 2 ]
+        middleware: [2]
       }
     })
 
     it('should return resource middleware correctly', function () {
       dispatcher.getProperty({}, resource, action, 'resource.middleware')
-        .should.eql({ key: 'middleware', value: [ 1 ] })
+        .should.eql({ key: 'middleware', value: [1] })
     })
 
     it('should return action middleware correctly', function () {
       dispatcher.getProperty({}, resource, action, 'action.middleware')
-        .should.eql({ key: 'middleware', value: [ 2 ] })
+        .should.eql({ key: 'middleware', value: [2] })
     })
 
     it('should throw an error on missing property', function () {
@@ -248,7 +248,7 @@ describe('Dispatcher', function () {
   describe('when creating handlers from resources', function () {
     before(function () {
       state.resources = {
-        'r1': {
+        r1: {
           name: 'r1',
           errors: {
             CustomError: {
@@ -313,35 +313,35 @@ describe('Dispatcher', function () {
     })
 
     it('should dispatch unauthorized envelope correctly', function () {
-      var handler = state.handlers[ 'r1!get' ]
+      const handler = state.handlers['r1!get']
       return handler.execute({}, {})
         .then(function (result) {
-          return state.transforms[ 'r1!get' ].execute({}, result)
+          return state.transforms['r1!get'].execute({}, result)
         })
         .should.eventually.eql({ status: 401, data: 'Go Away' })
     })
 
     it('should dispatch authorized get correctly', function () {
-      var handler = state.handlers[ 'r1!get' ]
+      const handler = state.handlers['r1!get']
       return handler.execute({}, { credentials: {} })
         .then(function (result) {
-          return state.transforms[ 'r1!get' ].execute({}, result)
+          return state.transforms['r1!get'].execute({}, result)
         })
         .should.eventually.eql({ status: 200, data: 'OK' })
     })
 
     it('should dispatch authorized get correctly', function () {
-      var handler = state.handlers[ 'r1!set' ]
+      const handler = state.handlers['r1!set']
       return handler.execute({}, { credentials: {} })
         .then(function (result) {
-          return state.transforms[ 'r1!set' ].execute({}, result)
+          return state.transforms['r1!set'].execute({}, result)
         })
         .should.eventually.eql({ status: 201, data: 'OK' })
     })
 
     it('should use a resource error strategy when available', function () {
-      var handle = state.errors[ 'r1!get' ]
-      var error = new Error()
+      const handle = state.errors['r1!get']
+      const error = new Error()
       return handle({
         resource: 'r1',
         action: 'get'
@@ -354,7 +354,7 @@ describe('Dispatcher', function () {
     })
 
     it('should use the default error strategy when available', function () {
-      var handle = state.errors[ 'r1!get' ]
+      const handle = state.errors['r1!get']
       return handle({}, new CustomError())
         .should.eql({
           status: 501,
@@ -363,7 +363,7 @@ describe('Dispatcher', function () {
     })
 
     it('should use an action error strategy when available', function () {
-      var handle = state.errors[ 'r1!customActionError' ]
+      const handle = state.errors['r1!customActionError']
       return handle({}, new CustomError())
         .should.eql({
           status: 502,

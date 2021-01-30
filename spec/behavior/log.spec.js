@@ -3,13 +3,13 @@ const _ = require('fauxdash')
 const log = require('../../src/log')
 
 describe('Log', function () {
-  var log1, log2, log3, logs, levels
+  let log1, log2, log3, logs, levels
   before(function () {
     log1 = log.get('alpha')
     log2 = log.get('alpha.bravo')
     log3 = log.get('charlie')
-    logs = [ log1, log2, log3 ]
-    levels = [ 'debug', 'info', 'warn', 'error', 'fatal' ]
+    logs = [log1, log2, log3]
+    levels = ['debug', 'info', 'warn', 'error', 'fatal']
   })
 
   describe('with no adapters', function () {
@@ -21,7 +21,7 @@ describe('Log', function () {
   })
 
   describe('with function adapter', function () {
-    var captured = []
+    const captured = []
     before(function () {
       log.addAdapter(function capturer (entry) {
         captured.push(entry.message)
@@ -29,7 +29,7 @@ describe('Log', function () {
 
       _.each(logs, function (l, i) {
         _.each(levels, function (level) {
-          l[ level ]('%s %s', l.namespace, level)
+          l[level]('%s %s', l.namespace, level)
         })
       })
     })
@@ -58,7 +58,7 @@ describe('Log', function () {
   })
 
   describe('with named function adapter', function () {
-    var captured = []
+    const captured = []
     before(function () {
       log.addAdapter('test', function capturer (entry) {
         captured.push(entry.message)
@@ -66,7 +66,7 @@ describe('Log', function () {
 
       _.each(logs, function (l, i) {
         _.each(levels, function (level) {
-          l[ level ]('%s %s', l.namespace, level)
+          l[level]('%s %s', l.namespace, level)
         })
       })
     })
@@ -95,7 +95,7 @@ describe('Log', function () {
   })
 
   describe('with custom config for function adapter', function () {
-    var captured = []
+    const captured = []
     before(function () {
       log.addAdapter({ level: 2, filter: '-alpha*' }, function capturer (entry) {
         captured.push(entry.message)
@@ -103,7 +103,7 @@ describe('Log', function () {
 
       _.each(logs, function (l, i) {
         _.each(levels, function (level) {
-          l[ level ]('%s %s', l.namespace, level)
+          l[level]('%s %s', l.namespace, level)
         })
       })
     })
@@ -125,8 +125,8 @@ describe('Log', function () {
   })
 
   describe('with custom config for initializing function adapter', function () {
-    var captured = []
-    var calls = 0
+    const captured = []
+    let calls = 0
     before(function () {
       function capture (entry) {
         captured.push(entry.message)
@@ -149,7 +149,7 @@ describe('Log', function () {
 
       _.each(logs, function (l, i) {
         _.each(levels, function (level) {
-          l[ level ]('%s %s', l.namespace, level)
+          l[level]('%s %s', l.namespace, level)
         })
       })
     })
@@ -178,7 +178,7 @@ describe('Log', function () {
   })
 
   describe('with object adapter', function () {
-    var captured = []
+    const captured = []
     before(function () {
       function capture (entry) {
         captured.push(entry.message)
@@ -197,7 +197,7 @@ describe('Log', function () {
 
       _.each(logs, function (l, i) {
         _.each(levels, function (level) {
-          l[ level ]('%s %s', l.namespace, level)
+          l[level]('%s %s', l.namespace, level)
         })
       })
     })
@@ -226,7 +226,7 @@ describe('Log', function () {
   })
 
   describe('with named object adapter', function () {
-    var captured = []
+    const captured = []
     before(function () {
       function capture (entry) {
         captured.push(entry.message)
@@ -246,7 +246,7 @@ describe('Log', function () {
 
       _.each(logs, function (l, i) {
         _.each(levels, function (level) {
-          l[ level ]('%s %s', l.namespace, level)
+          l[level]('%s %s', l.namespace, level)
         })
       })
     })
@@ -275,7 +275,7 @@ describe('Log', function () {
   })
 
   describe('with custom config for object adapter', function () {
-    var captured = []
+    let captured = []
     before(function () {
       function capture (entry) {
         captured.push(entry.message)
@@ -296,7 +296,7 @@ describe('Log', function () {
 
       _.each(logs, function (l, i) {
         _.each(levels, function (level) {
-          l[ level ]('%s %s', l.namespace, level)
+          l[level]('%s %s', l.namespace, level)
         })
       })
     })

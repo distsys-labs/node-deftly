@@ -3,7 +3,7 @@ const deftly = require('../../src/index')
 
 describe('Index', function () {
   describe('when changing middleware stacks', function () {
-    var service
+    let service
     before(function () {
       return deftly.init({})
         .then(function (x) {

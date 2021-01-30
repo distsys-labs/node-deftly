@@ -1,7 +1,7 @@
-var _ = require('lodash')
+const _ = require('fauxdash')
 
 function authorize (roles, envelope, next) {
-  if (_.includes(roles, envelope.role)) {
+  if (roles.includes(envelope.role)) {
     next()
   } else {
     throwCustom('Forbidden')
@@ -27,7 +27,7 @@ function checkUser (envelope, next) {
 }
 
 function throwCustom (error, message) {
-  var E = function (message) {
+  const E = function (message) {
     this.name = error + 'Error'
     this.message = message || error
     this.stack = (new Error()).stack

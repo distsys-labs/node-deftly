@@ -14,10 +14,10 @@ module.exports = function telemetry () {
     actions: {
       metrics: {
         authenticated: true,
-        roles: [ 'system', 'admin' ],
+        roles: ['system', 'admin'],
         topic: 'metrics',
         handle: function (envelope, metrics) {
-          var report = metrics.getReport()
+          const report = metrics.getReport()
           return { data: report }
         }
       },
